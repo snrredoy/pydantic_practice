@@ -80,4 +80,4 @@ class Comment(BaseModel):
     author: UserProfile
     replies: Optional[List['Comment']] = None
 
-Comment.model_rebuild()  # To handle recursive type definition
+Comment.model_rebuild()  # To handle recursive type definition forward referencing

@@ -60,3 +60,24 @@ class Product(BaseModel):
     def total_price(self) -> float:
         return self.price * self.quantity
 
+
+class Address(BaseModel):
+    street: str
+    city: str
+    state: str
+    zip_code: str
+
+
+class UserProfile(BaseModel):
+    id : int
+    full_name: str
+    address: Address
+
+
+class Comment(BaseModel):
+    id: int
+    content: str
+    author: UserProfile
+    replies: Optional[List['Comment']] = None
+
+Comment.model_rebuild()  # To handle recursive type definition

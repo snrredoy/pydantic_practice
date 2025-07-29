@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator, computed_field
 from typing import Optional, List, Dict, Set
 
 class Cart(BaseModel):
@@ -30,8 +30,33 @@ class Employee(BaseModel):
 
 
 class User(BaseModel):
-    username: str = Field(
-        ...,
-        min_length=3,
-        max_length=50
-    )
+    username: str
+
+    @field_validator('username')
+    def username_length(cls, value):
+        if len(value) < 3:
+            raise ValueError('Username must be at least 3 characters long')
+        return value
+
+
+class SignUpData(BaseModel):
+    username: str
+    password: str
+    confirm_password: str
+
+    @model_validator(mode='after')
+    def password_match(cls, values):
+        if values.password != values.confirm_password:
+            raise ValueError('Password not match')
+        return values
+
+
+class Product(BaseModel):
+    price: float
+    quantity: int
+
+    @computed_field
+    @property
+    def total_price(self) -> float:
+        return self.price * self.quantity
+
